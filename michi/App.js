@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, Button } from 'react-native';
 
 export default class App extends React.Component {
 
@@ -16,13 +16,18 @@ export default class App extends React.Component {
 
       currentPlayer: 1,
     }
+
+    this.getWinner = this.getWinner.bind(this);
+    this.initializeGame = this.initializeGame.bind(this);
+    this.onTilePress = this.onTilePress.bind(this);
+    this.onNewGameOnpress= this.onNewGameOnpress.bind(this);
   }
 
   componentDidMount() {
     this.initializeGame();
   }
 
-  initializeGame = () => {
+  initializeGame(){
     this.setState({gameStates:
         [
           [0, 0, 0],
@@ -35,20 +40,20 @@ export default class App extends React.Component {
     });
   }
 
-//obtener el ganador
-checkWinner = () => {
+//para obtener el ganador
+getWinner(){
   const MM_TILES = 3;
-  var arr = this.state.gameStates;
-  var sum;
+  let arr = this.state.gameStates;
+  let sum;
 
   //fila de verificacion
-  for (var i = 0; 1 < MM_TILES; i++) {
-    sum = arr[i][0] + arr[0][1] + arr[i][2];
-    if (sum == 3) { return 1; }
+  for ( i = 0; i < MM_TILES; i++) {
+    sum = arr[i][0] + arr[i][1] + arr[i][2];
+    if (sum == 3) {return 1;}
     else if (sum == -3) { return -1 }
   }
   //fila de columnas
-  for (var i = 0; 1 < MM_TILES; i++) {
+  for ( i = 0; i < MM_TILES; i++) {
     sum = arr[0][i] + arr[1][i] + arr[2][i];
     if (sum == 3) { return 1; }
     else if (sum == -3) { return -1 }
@@ -62,40 +67,55 @@ checkWinner = () => {
   if (sum == 3) { return 1; }
   else if (sum == -3) { return -1 }
 
-  //no hay ganadores
-  var winner = this.getWinner();
-  if (winner == 1) {
-    Alert.alert("El jugador  1 es ganador"),
-      this.initializeGame();
-  }
-  else if (winner == 1) {
-    Alert.alert("El jugador 2 es ganador"),
-      this.initializeGame();
-  }
+  //no hay ganadores...
+  return 0;
+  
 }
 
 
-  onTilePress = (row, col) => {
+  onTilePress(row, col){
 
-    // no permita que cambie
-    var value = this.state.gameStates[row][col];
+    // no permita que cambie el icono
+    let value = this.state.gameStates[row][col];
     if (value !== 0) { return; }
 
     //agarrar jugador actual
-    var currentPlayer = this.state.currentPlayer;
+    let currentPlayer = this.state.currentPlayer;
 
-    //marca un solo icocono 
-    var arr = this.state.gameStates.slice();
+    //establece el mosaico correcto
+    let arr = [...this.state.gameStates];
     arr[row][col] = currentPlayer;
-    this.setState({ gameStates: arr });
-
     // cambiar al otro jugador
-    var nextplayer = (currentPlayer == 1) ? -1 : 1;
-    this.setState({ currentPlayer: nextplayer });
+    let nextplayer = (currentPlayer == 1) ? -1 : 1;
+    this.setState({ gameStates: arr,
+      currentPlayer: nextplayer });
+
+    //verifica ganador
+  let  winner = this.getWinner();
+  if (winner == 1) {
+    Alert.alert("El jugador skyl es ganador"),
+      this.initializeGame();
+  }
+  else if (winner == -1) {
+    Alert.alert("El jugador ryder es ganador"),
+      this.initializeGame();
   }
 
-  renderPosition = (row, col) => {
-    var value = this.state.gameStates[row][col];
+   if (winner) {
+    Alert.alert('Empate!');
+    this.onNewGameOnpress();
+  }
+     
+  }
+
+  // funcion del boton 
+onNewGameOnpress(){
+  this.initializeGame();
+}
+ 
+
+  renderPosition(row, col){
+    let value = this.state.gameStates[row][col];
     switch (value) {
       case 1: return <View><Image source={require('./assets/33.jpg')} style={styles.icon} /></View>;
       case -1: return <View><Image source={require('./assets/ryder.jpg')} style={styles.icon} /></View>;
@@ -157,16 +177,13 @@ checkWinner = () => {
           <Image source={require('./assets/skye.jpg')} style={styles.playerWins} /><Text style={styles.wins}> </Text>
           <Image source={require('./assets/ryder.jpg')} style={styles.playerWins} /><Text style={styles.wins}> </Text>
         </View>
-        {/* <View style= {{paddingTop:50}}/>
-       <button title ="Nuevo Juego" onPress= {this.onNewGameOnpress}/>  */}
+       {/* <View style= {{color:'white'}}/> */}
+       <Button title ="Nuevo Juego" onPress= {this.onNewGameOnpress}/> 
         </View>
       
-
     );
   }
 }
-
-
 
 
 const styles = StyleSheet.create({
@@ -177,7 +194,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
+  
   titleContainer: {
     width: 300,
     height: 150
@@ -208,14 +225,6 @@ const styles = StyleSheet.create({
     height: 70,
     marginLeft: 12,
     marginTop: 12
-  },
-
-
-  playerTurn: {
-    fontSize: 30,
-    color: '#ffffff',
-    marginBottom: 20,
-    paddingBottom: 20
   },
 
   wins: {
