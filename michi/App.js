@@ -40,20 +40,20 @@ export default class App extends React.Component {
     });
   }
 
-//para obtener el ganador
+//devuelve 1 si el jugador 1 ganó, -1 si ganó el jugador 2 o 0 si nadie ganó
 getWinner(){
   const MM_TILES = 3;
   let arr = this.state.gameStates;
   let sum;
 
   //fila de verificacion
-  for ( i = 0; i < MM_TILES; i++) {
+  for (let i = 0; i < MM_TILES; i++) {
     sum = arr[i][0] + arr[i][1] + arr[i][2];
     if (sum == 3) {return 1;}
     else if (sum == -3) { return -1 }
   }
   //fila de columnas
-  for ( i = 0; i < MM_TILES; i++) {
+  for (let i = 0; i < MM_TILES; i++) {
     sum = arr[0][i] + arr[1][i] + arr[2][i];
     if (sum == 3) { return 1; }
     else if (sum == -3) { return -1 }
@@ -101,10 +101,7 @@ getWinner(){
       this.initializeGame();
   }
 
-   if (winner) {
-    Alert.alert('Empate!');
-    this.onNewGameOnpress();
-  }
+  
      
   }
 
@@ -174,10 +171,9 @@ onNewGameOnpress(){
         </View>
 
         <View style={{ flexDirection: "row" }}>
-          <Image source={require('./assets/skye.jpg')} style={styles.playerWins} /><Text style={styles.wins}> </Text>
-          <Image source={require('./assets/ryder.jpg')} style={styles.playerWins} /><Text style={styles.wins}> </Text>
+          <Image source={require('./assets/skye.jpg')} style={styles.playerWins} /><Text style={styles.wins}>: </Text>
+          <Image source={require('./assets/ryder.jpg')} style={styles.playerWins} /><Text style={styles.wins}>: </Text>
         </View>
-       {/* <View style= {{color:'white'}}/> */}
        <Button title ="Nuevo Juego" onPress= {this.onNewGameOnpress}/> 
         </View>
       
@@ -239,6 +235,5 @@ const styles = StyleSheet.create({
     marginTop: 7
   }
 });
-
 
 
