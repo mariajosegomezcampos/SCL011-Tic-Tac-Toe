@@ -13,7 +13,7 @@ export default class App extends React.Component {
         [0, 0, 0],
         [0, 0, 0]
       ],
-
+     snext:true,
       currentPlayer: 1,
     }
 
@@ -100,10 +100,22 @@ getWinner(){
     Alert.alert("El jugador ryder es ganador"),
       this.initializeGame();
   }
-
-  
-     
+   
+  if(winner==0){
+    let isFull=true;
+   for(let i = 0; i < 3; i++){
+    for(let j = 0; j < 3; j++){
+      if (arr[i][j] == 0) {
+        isFull= false;
+         }
+        }
+       } 
+       if (isFull){
+        Alert.alert('Empate!');
+        this.initializeGame();
+      }
   }
+}
 
   // funcion del boton 
 onNewGameOnpress(){
@@ -114,8 +126,8 @@ onNewGameOnpress(){
   renderPosition(row, col){
     let value = this.state.gameStates[row][col];
     switch (value) {
-      case 1: return <View><Image source={require('./assets/33.jpg')} style={styles.icon} /></View>;
-      case -1: return <View><Image source={require('./assets/ryder.jpg')} style={styles.icon} /></View>;
+      case 1: return <View><Image source={require('./assets/skye.png')} style={styles.icon} /></View>;
+      case -1: return <View><Image source={require('./assets/ryder.png')} style={styles.icon} /></View>;
       default: return <View />;
     }
   }
@@ -171,9 +183,10 @@ onNewGameOnpress(){
         </View>
 
         <View style={{ flexDirection: "row" }}>
-          <Image source={require('./assets/skye.jpg')} style={styles.playerWins} /><Text style={styles.wins}>: </Text>
-          <Image source={require('./assets/ryder.jpg')} style={styles.playerWins} /><Text style={styles.wins}>: </Text>
+          <Image source={require('./assets/skye.png')} style={styles.playerWins} /><Text style={styles.wins}>: </Text>
+          <Image source={require('./assets/ryder.png')} style={styles.playerWins} /><Text style={styles.wins}>: </Text>
         </View>
+          <View style= {{paddingTop:5}}/>
        <Button title ="Nuevo Juego" onPress= {this.onNewGameOnpress}/> 
         </View>
       
